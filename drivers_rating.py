@@ -49,11 +49,90 @@ def trips(driver_name, driver_family_name, driver_plate_number):
 
 def main():
 
-    driver_name = 'Amed'
-    driver_family_name = 'Hame'
-    driver_plate_number = '125 ABC'
+    print("Did you enjoy the ride? (yes/no)")
+
+    while True:
+        user_input = input()
+      
+        if user_input == "no":
+            do_you_like = 5
+            print("Ouch, this is bad... So on a 1-10 scale, how would you rate the driving style of the driver?")
+            while True:
+                try:
+                    condition_score = int(input())
+                except ValueError:
+                    print("Ouch, here is error, so try again")
+                    continue
+                if condition_score > 0 and condition_score < 11:
+                    print("Mhm... On a 1-10 scale, how would you rate the condition of the car?")
+                    while True:
+                        try:
+                            style_score = int(input())
+                        except ValueError:
+                            print("Ouch, here is error, so try again")
+                            continue
+                        if style_score > 0 and style_score < 11:
+                            print("Okay, so on a 1-10 scale, how would you rate the behaviour of the driver?")
+                            while True:
+                                try:
+                                    behaviour_score = int(input())
+                                except ValueError:
+                                    print("Ouch, here is error, so try again!")
+                                    continue
+                                if behaviour_score > 0 and behaviour_score < 11:
+                                    print(do_you_like, condition_score, style_score, behaviour_score)
+                                    exit()
+                                else:
+                                    print("The rating is in the wrong range, please try again!")
+                        else:       
+                            print("The rating is in the wrong range, please try again!")
+                else:       
+                    print("The rating is in the wrong range, please try again!")
+  
+        elif user_input == "yes":
+            do_you_like = 10
+            print("Nice! So on a 1-10 scale, how would you rate the driving style of the driver?")
+            while True:
+                try:
+                    condition_score = int(input())
+                except ValueError:
+                    print("Ouch, here is error, so try again")
+                    continue
+                if condition_score > 0 and condition_score < 11:
+                    print("Okaaay... On a 1-10 scale, how would you rate the condition of the car?")
+                    while True:
+                        try:
+                            style_score = int(input())
+                        except ValueError:
+                            print("Ouch, here is error, so try again")
+                            continue
+                        if style_score > 0 and style_score < 11:
+                            print("Cool, so on a 1-10 scale, how would you rate the behaviour of the driver?")
+                            while True:
+                                try:
+                                    behaviour_score = int(input())
+                                except ValueError:
+                                    print("Ouch, here is error, so try again!")
+                                    continue
+                                if behaviour_score > 0 and behaviour_score < 11:
+                                    print(do_you_like, condition_score, style_score, behaviour_score)
+                                    exit()
+                                else:
+                                    print("The rating is in the wrong range, please try again!")
+                        else:       
+                            print("The rating is in the wrong range, please try again!")
+                else:       
+                    print("The rating is in the wrong range, please try again!")
+        else:
+            print("Try Again")
+    # condition_score = input()
+    # behaviour_score = input()
+    # style_score = input()
+    # driver_name = 'Amed'
+    # driver_family_name = 'Hame'
+    # driver_plate_number = '125 ABC'
     
-    driver(driver_name, driver_family_name, driver_plate_number)
+    # driver(driver_name, driver_family_name, driver_plate_number)
 
 if __name__ == "__main__":
     main()
