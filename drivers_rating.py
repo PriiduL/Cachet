@@ -18,7 +18,7 @@ def sqlite3_check():
             with open (schema) as file:
                 sqlite3_create(sqlite3_file, file.read())
         else:
-            output = f'Error: Required file "{schema}" is not exist'
+            output = f'Error: Required file "{schema}" does not exist'
 
             return output
 
@@ -61,7 +61,7 @@ def main():
                 try:
                     condition_score = int(input())
                 except ValueError:
-                    print("Ouch, here is error, so try again")
+                    print("Oops! There is an error. Please try again!")
                     continue
                 if condition_score > 0 and condition_score < 11:
                     print("Mhm... On a 1-10 scale, how would you rate the condition of the car?")
@@ -69,7 +69,7 @@ def main():
                         try:
                             style_score = int(input())
                         except ValueError:
-                            print("Ouch, here is error, so try again")
+                            print("Oops! There is an error. Please try again!")
                             continue
                         if style_score > 0 and style_score < 11:
                             print("Okay, so on a 1-10 scale, how would you rate the behaviour of the driver?")
@@ -77,17 +77,17 @@ def main():
                                 try:
                                     behaviour_score = int(input())
                                 except ValueError:
-                                    print("Ouch, here is error, so try again!")
+                                    print("Oops! There is an error. Please try again!")
                                     continue
                                 if behaviour_score > 0 and behaviour_score < 11:
                                     print(do_you_like, condition_score, style_score, behaviour_score)
                                     exit()
                                 else:
-                                    print("The rating is in the wrong range, please try again!")
+                                    print("The rating is not in range, please try again!")
                         else:       
-                            print("The rating is in the wrong range, please try again!")
+                            print("The rating is not in range, please try again!")
                 else:       
-                    print("The rating is in the wrong range, please try again!")
+                    print("The rating is not in range, please try again!")
   
         elif user_input == "yes":
             do_you_like = 10
@@ -104,7 +104,7 @@ def main():
                         try:
                             style_score = int(input())
                         except ValueError:
-                            print("Ouch, here is error, so try again")
+                            print("Oops! There is an error. Please try again!")
                             continue
                         if style_score > 0 and style_score < 11:
                             print("Cool, so on a 1-10 scale, how would you rate the behaviour of the driver?")
@@ -112,17 +112,17 @@ def main():
                                 try:
                                     behaviour_score = int(input())
                                 except ValueError:
-                                    print("Ouch, here is error, so try again!")
+                                    print("Oops! There is an error. Please try again!")
                                     continue
                                 if behaviour_score > 0 and behaviour_score < 11:
                                     print(do_you_like, condition_score, style_score, behaviour_score)
                                     exit()
                                 else:
-                                    print("The rating is in the wrong range, please try again!")
+                                    print("The rating is not in range, please try again!")
                         else:       
-                            print("The rating is in the wrong range, please try again!")
+                            print("The rating is not in range, please try again!")
                 else:       
-                    print("The rating is in the wrong range, please try again!")
+                    print("The rating is not in range, please try again!")
         else:
             print("Try Again")
     # condition_score = input()
