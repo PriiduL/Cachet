@@ -6,7 +6,122 @@ sqlite3_drivers_schema = 'drivers.sql'
 sqlite3_trips_schema = 'trips.sql'
 sqlite3_file_trips = 'trips.sqlite3'
 from statistics import mean
+def colored(r, g, b, text):
+    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
 
+def negative_review(driver_id):
+    do_you_like = 5
+    print("Ouch, this is bad... So on a 1-10 scale, how would you rate the driving style of the driver?")
+    while True:
+        try:
+            style_score	 = int(input())
+        except ValueError:
+            print("Oops! There is an error. Please try again!")
+            continue
+        if style_score > 0 and style_score < 11:
+            print("Mhm... On a 1-10 scale, how would you rate the condition of the car?")
+            while True:
+                try:
+                    condition_score = int(input())
+                except ValueError:
+                    print("Oops! There is an error. Please try again!")
+                    continue
+                if condition_score > 0 and condition_score < 11:
+                    print("Okay, so on a 1-10 scale, how would you rate the behaviour of the driver?")
+                    while True:
+                        try:
+                            behaviour_score = int(input())
+                        except ValueError:
+                            print("Oops! There is an error. Please try again!")
+
+                        if behaviour_score > 0 and behaviour_score < 11:
+                            rate_list = [do_you_like, style_score, condition_score, behaviour_score]
+                            '''Take average from data input and round it'''
+                            avg_trip_score = round(mean(rate_list))
+                            trips(do_you_like, condition_score, style_score, behaviour_score, driver_id, avg_trip_score)
+                            print("Thanks for you review! Closing program...")
+                            exit()
+                        else:
+                            print("The rating is in the wrong range, please try again!")
+                            break
+                else:       
+                    print("The rating is in the wrong range, please try again!")
+                    break
+        else:       
+            print("The rating is in the wrong range, please try again!")
+            break
+
+def dev_mode_new_driver():
+    print("Enter driver\'s name:")
+    d_name = input()
+    print("Enter driver\'s family name:")
+    df_name = input()
+    print("Enter driver car\'s plate number:")
+    plt_number = input()
+    print(f"New car driver\'s name is {d_name} {df_name}, and his/her car plate number is {plt_number}")
+    print("This is correct? (y/n)")
+    while True:
+        user_input = input()
+        if user_input == "y":
+            print("Writing data to database...\n\n\n\n\n\n\n\n")
+            driver(d_name, df_name, plt_number)
+            return_developer_mode()
+            break
+        elif user_input == "n":
+            print("Aborting operation...\n\n\n\n\n\n\n\n")
+            return_developer_mode()
+            break
+        else:
+            print("Error, please try again")
+
+def dev_exit():
+    print("Exiting from developer\'s mode...\n\n\n\n\n\n\n\n\n")
+    print("Did you enjoy the ride? (yes/no)\nIf you need more info about driver, type \"info\"\nIf you need close the program, type \"exit\"")
+
+def positive_review(driver_id):
+    do_you_like = 10
+    print("Nice! So on a 1-10 scale, how would you rate the driving style of the driver?")
+    while True:
+        try:
+            condition_score = int(input())
+        except ValueError:
+            print("Ouch, here is error, so try again")
+            continue
+        if condition_score > 0 and condition_score < 11:
+            print("Okaaay... On a 1-10 scale, how would you rate the condition of the car?")
+            while True:
+                try:
+                    style_score = int(input())
+                except ValueError:
+                    print("Ouch, here is error, so try again")
+                    continue
+                if style_score > 0 and style_score < 11:
+                    print("Cool, so on a 1-10 scale, how would you rate the behaviour of the driver?")
+                    while True:
+                        try:
+                            behaviour_score = int(input())
+                        except ValueError:
+                            print("Ouch, here is error, so try again!")
+                            continue
+                        if behaviour_score > 0 and behaviour_score < 11:
+                            rate_list = [do_you_like, style_score, condition_score, behaviour_score]
+                            '''Take average from data input and round it'''
+                            avg_trip_score = round(mean(rate_list))
+                            trips(do_you_like, condition_score, style_score, behaviour_score, driver_id, avg_trip_score)
+                            print("Thanks for you review! Closing program...")
+                            exit()
+                        else:
+                            print("The rating is in the wrong range, please try again!")
+                else:       
+                    print("The rating is in the wrong range, please try again!")
+        else:       
+            print("The rating is in the wrong range, please try again!")
+            
+def return_developer_mode():
+    print("You entered into a developer\'s mode, choose a right setting:\n")
+    print("Type \"add\", to add new driver into a database")
+    print("Type \"change_id\" to change program\'s current driver_id")
+    print("Type \"exit\" to exit from developer\'s mode")
 
 def remove_sym(name):
     name = re.sub(r"[\[\]]",'',name)
@@ -14,6 +129,64 @@ def remove_sym(name):
     name = name.replace("'", "")
     name = name.replace(",", "")
     return name
+
+def program_exit():
+    print("Closing program...")
+
+def dev_change_id(driver_id):
+    print(f"Current driver_id is {driver_id}")
+    print("Do you want to change this value? (y/n)")
+    while True:
+        user_input = input()
+        if user_input == "y":
+            print("Enter value:")
+            new_id = int(input())
+            print("Changing value...")
+            driver_id = new_id
+            print(f"Operation completed successfully!\nNew driver_id is {driver_id}")
+            print("Information about selected driver:")
+            name = remove_sym(str(run_query(f'SELECT name FROM drivers WHERE id = "{driver_id}"')))
+            family_name = remove_sym(str(run_query(f'SELECT family_name FROM drivers WHERE id = "{driver_id}"')))
+            print("Name: " + name + " " + family_name)
+            car_plate = remove_sym(str(run_query(f'SELECT plate_number FROM drivers WHERE id = "{driver_id}"')))
+            print("Driver\'s car plate number: " + car_plate)
+            trip_amount = remove_sym(str(run_query(f'SELECT COUNT(driver_id) FROM trips WHERE driver_id = "{driver_id}"')))
+            print(f"Number of trips: {trip_amount}")
+            print("Returning back to developer menu...\n\n\n")
+
+            return_developer_mode()
+            return driver_id
+
+        elif user_input == "n":
+            print("Aborting operation...\n\n\n\n\n\n\n\n")
+            return_developer_mode()
+            break
+        else:
+            print("Error")
+
+def driver_info(driver_id):
+    print("Information about your driver:")
+    name = remove_sym(str(run_query(f'SELECT name FROM drivers WHERE id = "{driver_id}"')))
+    family_name = remove_sym(str(run_query(f'SELECT family_name FROM drivers WHERE id = "{driver_id}"')))
+    print("Name: " + name + " " + family_name)
+    car_plate = remove_sym(str(run_query(f'SELECT plate_number FROM drivers WHERE id = "{driver_id}"')))
+    print("Driver\'s car plate number: " + car_plate)
+    avg_score = remove_sym(str(run_query(f"SELECT AVG(avg_trip_score) FROM trips WHERE driver_id = {driver_id};")))
+    avg_score = round(float(avg_score), 1)
+    if avg_score < 5.9:
+        avg_score_colored = colored(225, 0, 0, str(avg_score))
+        avg_score_colored = avg_score_colored.replace(" ", "")
+    elif avg_score > 5.9 and avg_score < 7.9:
+        avg_score_colored = colored(255, 191, 0, str(avg_score))
+        avg_score_colored = avg_score_colored.replace(" ", "")
+    elif avg_score < 8:
+        avg_score_colored = colored(0, 132, 80, str(avg_score))
+        avg_score_colored = avg_score_colored.replace(" ", "")
+    print("Driver\'s rating: " + avg_score_colored +"/10")
+    trip_amount = remove_sym(str(run_query(f'SELECT COUNT(driver_id) FROM trips WHERE driver_id = "{driver_id}"')))
+    print(f"Number of trips: {trip_amount}")
+    print("End of information list...\n\n\n\n")
+    print("Did you enjoy the ride? (yes/no)\nIf you need more info about driver, type \"info\"\nIf you need close the program, type \"exit\"")
 
 def run_query(query):
         sqlite3_output = sqlite3_run(sqlite3_file, query)
@@ -55,128 +228,74 @@ def trips(do_you_like, condition_score, style_score, behaviour_score, driver_id,
             run_query(add_record)
     else:
         output = sqlite3_check()
-        return output        
+        return output
+
+def dev_mode_activate():
+    while True:
+        user_input = input()
+        if user_input == "add":
+            dev_mode_new_driver()
+
+        elif user_input == "change_id":
+            driver_id = dev_change_id(driver_id)
+
+        elif (user_input == "exit"):
+            dev_exit()
+            break
+        else:
+            print("Error")
+                    
 def main():
     driver_id = 3
-    print("Did you enjoy the ride? (yes/no)\nIf you need more info about driver, write \"info\"")
+    print("Did you enjoy the ride? (yes/no)\nIf you need more info about driver, type \"info\"\nIf you need close the program, type \"exit\"")
 
     while True:
         user_input = input()
       
         if user_input == "no":
-            do_you_like = 5
-            print("Ouch, this is bad... So on a 1-10 scale, how would you rate the driving style of the driver?")
-            while True:
-                try:
-                    style_score	 = int(input())
-                except ValueError:
-                    print("Oops! There is an error. Please try again!")
-                    continue
-                if style_score > 0 and style_score < 11:
-                    print("Mhm... On a 1-10 scale, how would you rate the condition of the car?")
-                    while True:
-                        try:
-                            condition_score = int(input())
-                        except ValueError:
-                            print("Oops! There is an error. Please try again!")
-                            continue
-                        if condition_score > 0 and condition_score < 11:
-                            print("Okay, so on a 1-10 scale, how would you rate the behaviour of the driver?")
-                            while True:
-                                try:
-                                    behaviour_score = int(input())
-                                except ValueError:
-                                    print("Oops! There is an error. Please try again!")
-
-                                if behaviour_score > 0 and behaviour_score < 11:
-                                    rate_list = [do_you_like, style_score, condition_score, behaviour_score]
-                                    '''Take average from data input and round it'''
-                                    avg_trip_score = round(mean(rate_list + 0.5))
-                                    print(driver_id, do_you_like, style_score, condition_score, behaviour_score, avg_trip_score)
-                                    trips(do_you_like, condition_score, style_score, behaviour_score, driver_id, avg_trip_score)
-                                    break
-                                else:
-                                    print("The rating is in the wrong range, please try again!4")
-                                    break
-                        else:       
-                            print("The rating is in the wrong range, please try again!3")
-                            break
-                else:       
-                    print("The rating is in the wrong range, please try again!2")
-                    break
+            negative_review(driver_id)
   
         elif user_input == "yes":
-            do_you_like = 10
-            print("Nice! So on a 1-10 scale, how would you rate the driving style of the driver?")
-            while True:
-                try:
-                    condition_score = int(input())
-                except ValueError:
-                    print("Ouch, here is error, so try again")
-                    continue
-                if condition_score > 0 and condition_score < 11:
-                    print("Okaaay... On a 1-10 scale, how would you rate the condition of the car?")
-                    while True:
-                        try:
-                            style_score = int(input())
-                        except ValueError:
-                            print("Ouch, here is error, so try again")
-                            continue
-                        if style_score > 0 and style_score < 11:
-                            print("Cool, so on a 1-10 scale, how would you rate the behaviour of the driver?")
-                            while True:
-                                try:
-                                    behaviour_score = int(input())
-                                except ValueError:
-                                    print("Ouch, here is error, so try again!")
-                                    continue
-                                if behaviour_score > 0 and behaviour_score < 11:
-                                    rate_list = [do_you_like, style_score, condition_score, behaviour_score]
-                                    '''Take average from data input and round it'''
-                                    avg_trip_score = round(mean(rate_list))
-                                    print(driver_id, do_you_like, style_score, condition_score, behaviour_score, avg_trip_score)
-                                    trips(do_you_like, condition_score, style_score, behaviour_score, driver_id, avg_trip_score)
-
-                                    break
-                                else:
-                                    print("The rating is in the wrong range, please try again!4")
-                        else:       
-                            print("The rating is in the wrong range, please try again!3")
-                else:       
-                    print("The rating is in the wrong range, please try again!2")
-
+            positive_review(driver_id)
 
         elif user_input == "info":
-            print("Information about your driver:")
-            name = remove_sym(str(run_query(f'SELECT name FROM drivers WHERE id = "{driver_id}"')))
-            family_name = remove_sym(str(run_query(f'SELECT family_name FROM drivers WHERE id = "{driver_id}"')))
-            print("Name: " + name + " " + family_name)
-            car_plate = remove_sym(str(run_query(f'SELECT plate_number FROM drivers WHERE id = "{driver_id}"')))
-            print("Driver\'s car plate number: " + car_plate)
-            avg_score = remove_sym(str(run_query(f"SELECT AVG(avg_trip_score) FROM trips WHERE driver_id = {driver_id};")))
-            print("Driver\'s rating: " + avg_score +"/10")
-        
-        elif user_input == "test":
-            print("Closing program...")
-            break
-        # elif user_input == "developer_mode":
-        #     print("You entered into a developer\'s mode, choose a right setting:\n")
-        #     print("Write \"add\", to add new driver into a database")
-        #     print("Write \"change_id\" to change program\'s current driver_id")
-        #     while True:
-        #         user_input = input()
-        #         if user_input == "add":
-        #             print("Passed!")
-        #         elif user_input == "change_id":
-        #             print("Passed!")
+            driver_info(driver_id)
 
+        elif user_input == "exit":
+            program_exit()
+            return driver_id
+
+        elif user_input == "developer_mode":
+            return_developer_mode()
+            while True:
+                user_input = input()
+                if user_input == "add":
+                    dev_mode_new_driver()
+
+                elif user_input == "change_id":
+                    driver_id = dev_change_id(driver_id)
+
+                elif (user_input == "exit"):
+                    dev_exit()
+                    break
+                elif (user_input == "search"):
+                    print("Please enter driver\'s name:")
+                    search_name = input()
+                    print("Please enter driver\'s family name:")
+                    search_fname = input()
+                    print("Please enter driver car\' car table number:")
+                    search_tnumber = input()
+                    print("Gimme sec...")
+
+
+                else:
+                    print("Error")        
         else:
-            print("Try Again1")
+            print("Try Again")
     # driver_name = 'Amed'
     # driver_family_name = 'Hame'
     # driver_plate_number = '125 ABC'
     # driver(driver_name, driver_family_name, driver_plate_number)
-    print("I escaped!")
 if __name__ == "__main__":
     main()
 
